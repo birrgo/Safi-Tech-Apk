@@ -30,24 +30,26 @@ jobs:
 
       - name: Create Capacitor Config Safely
         run: |
-          echo '{' > capacitor.config.json
-          echo '  "appId": "com.safitech.app",' >> capacitor.config.json
-          echo '  "appName": "Safitech",' >> capacitor.config.json
-          echo '  "webDir": "www",' >> capacitor.config.json
-          echo '  "bundledWebRuntime": false,' >> capacitor.config.json
-          echo '  "plugins": {' >> capacitor.config.json
-          echo '    "SplashScreen": {' >> capacitor.config.json
-          echo '      "launchShowDuration": 3000,' >> capacitor.config.json
-          echo '      "launchAutoHide": true,' >> capacitor.config.json
-          echo '      "backgroundColor": "#001a66",' >> capacitor.config.json
-          echo '      "androidSplashResourceName": "splash",' >> capacitor.config.json
-          echo '      "androidScaleType": "CENTER_CROP",' >> capacitor.config.json
-          echo '      "splashFullScreen": true,' >> capacitor.config.json
-          echo '      "splashImmersive": true,' >> capacitor.config.json
-          echo '      "showSpinner": false' >> capacitor.config.json
-          echo '    }' >> capacitor.config.json
-          echo '  }' >> capacitor.config.json
-          echo '}' >> capacitor.config.json
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.safitech.app",
+            "appName": "Safitech",
+            "webDir": "www",
+            "bundledWebRuntime": false,
+            "plugins": {
+              "SplashScreen": {
+                "launchShowDuration": 3000,
+                "launchAutoHide": true,
+                "backgroundColor": "#001a66",
+                "androidSplashResourceName": "splash",
+                "androidScaleType": "CENTER_CROP",
+                "splashFullScreen": true,
+                "splashImmersive": true,
+                "showSpinner": false
+              }
+            }
+          }
+          EOF
 
       - name: Initialize & Sync Android Project
         run: |
@@ -65,9 +67,9 @@ jobs:
 
       - name: Set App Version Code
         run: |
-          # Bumping version code to 3 for the new Google Play release
-          sed -i -E 's/versionCode [0-9]+/versionCode 3/' android/app/build.gradle
-          sed -i -E 's/versionName "[^"]+"/versionName "1.0.3"/' android/app/build.gradle
+          # Robustly replacing versionCode to 4 to bypass previous Google Play rejections
+          sed -i 's/versionCode [0-9]*/versionCode 4/' android/app/build.gradle
+          sed -i 's/versionName "[^"]*"/versionName "1.0.4"/' android/app/build.gradle
 
       - name: Fix Android Hardware Back Button
         run: |
@@ -102,14 +104,16 @@ jobs:
 
       - name: Fix Kotlin Clashes
         run: |
-          echo "" >> android/app/build.gradle
-          echo "configurations.all {" >> android/app/build.gradle
-          echo "    resolutionStrategy {" >> android/app/build.gradle
-          echo "        force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'" >> android/app/build.gradle
-          echo "        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'" >> android/app/build.gradle
-          echo "        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'" >> android/app/build.gradle
-          echo "    }" >> android/app/build.gradle
-          echo "}" >> android/app/build.gradle
+          cat << 'EOF' >> android/app/build.gradle
+
+          configurations.all {
+              resolutionStrategy {
+                  force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                  force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+              }
+          }
+          EOF
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
