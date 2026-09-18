@@ -10,7 +10,7 @@ env:
   APP_NAME: "Safi Tech"
   PACKAGE_NAME: "com.safitech.app"
   # Replace with the actual AdMob App ID for Safi Tech if different
-  ADMOB_APP_ID: "ca-app-pub-1118823918279022~8410967279" 
+  ADMOB_APP_ID: "ca-app-pub-1118823918279022~6502545695" 
 
 jobs:
   build:
