@@ -1,4 +1,4 @@
-Name: Convert PWA to Release AAB (Safi Tech)
+name: Convert PWA to Release AAB (Safi Tech)
 
 on:
   push:
